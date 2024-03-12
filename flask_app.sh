@@ -1,5 +1,7 @@
 #!/bin/bash
 
+temp_dir=$(mktemp -d)
+cd $temp_dir
 # Crear una estructura de carpetas para el proyecto
 mkdir myflaskapp
 cd myflaskapp
@@ -8,9 +10,16 @@ mkdir static
 mkdir templates
 
 # Copiar archivos al proyecto
-cp ../flask_app.py .
-cp -r ../templates/* templates/.
-cp -r ../static/* static/.
+proyecto_dir="$PWD"
+echo "la ruta del proyecto es $proyecto_dir"
+
+cp -r "$proyecto_dir/static" .
+cp -r "$proyecto_dir/templates" .
+cp "$proyecto_dir/flask_app.py" .
+
+#cp ../flask_app.py .
+#cp -r ../templates/* templates/.
+#cp -r ../static/* static/.
 
 # Crear el Dockerfile
 echo "FROM python" > Dockerfile
@@ -30,3 +39,5 @@ docker run -t -d -p 5050:5050 -v /home/santiago/web_flask:/home/myapp --name fla
 
 
 docker ps -a
+
+rm -rf $temp_dir
